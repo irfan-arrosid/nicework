@@ -111,11 +111,11 @@ export default function BookOffice() {
         }
       );
 
-      console.log("Form submitted successfully:", response.data);
+      console.log("Form submitted successfully:", response.data.data);
       navigate("/success-booking", {
         state: {
           office,
-          booking: response.data,
+          booking: response.data.data,
         },
       });
     } catch (error: unknown) {
