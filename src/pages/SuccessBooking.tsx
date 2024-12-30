@@ -1,10 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { baseURL } from "../services/apiService";
 
 export default function SuccessBooking() {
   const location = useLocation();
   const { office, booking } = location.state;
-  const baseURL = "http://127.0.0.1:8000/storage";
 
   return (
     <>

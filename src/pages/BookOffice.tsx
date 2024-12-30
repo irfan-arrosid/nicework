@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Office } from "../types/type";
 import { z } from "zod";
-import axios from "axios";
 import { bookingSchema } from "../types/validationBooking";
+import Navbar from "../components/Navbar";
+import apiClient, { baseURL, isAxiosError } from "../services/apiService";
 
 export default function BookOffice() {
   const { slug } = useParams<{ slug: string }>();
@@ -11,8 +12,6 @@ export default function BookOffice() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const baseURL = "http://127.0.0.1:8000/storage";
-
   const [formData, setFormData] = useState({
     name: "",
     phone_number: "",
@@ -30,12 +29,8 @@ export default function BookOffice() {
 
   useEffect(() => {
     console.log("Fetching office data...");
-    axios
-      .get(`http://127.0.0.1:8000/api/office/${slug}`, {
-        headers: {
-          "X-API-KEY": "loremipsumdolorsitamet",
-        },
-      })
+    apiClient
+      .get(`/office/${slug}`)
       .then((response) => {
         setOffice(response.data.data);
 
@@ -55,7 +50,7 @@ export default function BookOffice() {
         setLoading(false);
       })
       .catch((error: unknown) => {
-        if (axios.isAxiosError(error)) {
+        if (isAxiosError(error)) {
           console.error("Error fetching office data:", error.message);
           setError(error.message);
         } else {
@@ -101,15 +96,9 @@ export default function BookOffice() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/booking-transaction",
-        { ...formData },
-        {
-          headers: {
-            "X-API-KEY": "loremipsumdolorsitamet",
-          },
-        }
-      );
+      const response = await apiClient.post("/booking-transaction", {
+        ...formData,
+      });
 
       console.log("Form submitted successfully:", response.data.data);
       navigate("/success-booking", {
@@ -119,7 +108,7 @@ export default function BookOffice() {
         },
       });
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
+      if (isAxiosError(error)) {
         console.error("Error submitting form:", error.message);
         setError(error.message);
       } else {
@@ -133,6 +122,7 @@ export default function BookOffice() {
 
   return (
     <>
+      <Navbar />
       <div
         id="Banner"
         className="relative w-full h-[240px] flex items-center shrink-0 overflow-hidden -mb-[50px]"

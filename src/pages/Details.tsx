@@ -4,14 +4,13 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Office } from "../types/type";
+import { baseURL } from "../services/apiService";
 
 export default function Details() {
   const { slug } = useParams<{ slug: string }>();
   const [office, setOffice] = useState<Office | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const baseURL = "http://127.0.0.1:8000/storage";
 
   useEffect(() => {
     axios
